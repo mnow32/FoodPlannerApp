@@ -7,7 +7,7 @@ namespace FoodPlannerAPI.Services
     {
         private readonly IHttpClientFactory _clientFactory;
         private readonly IConfiguration _configuration;
-        private const string defaultAddress = "https://api.spoonacular.com/recipes/complexSearch";
+        private const string defaultAddress = "https://api.spoonacular.com/recipes";
 
         public RecipeService(IHttpClientFactory clientFactory, IConfiguration configuration)
         {
@@ -23,11 +23,30 @@ namespace FoodPlannerAPI.Services
 
             string? apiKey = _configuration["apikey"];
 
-            string address = $"{defaultAddress}?apiKey={apiKey}{query}";
+            string address = $"{defaultAddress}/complexSearch?apiKey={apiKey}{query}";
+
+            // TODO: Error handling
 
             recipes = await client.GetFromJsonAsync<ApiResponseModel>(address);
 
             return recipes!;
+        }
+
+        public async Task<RecipeDetailsModel> GetRecipeDetailsByIdAsync(int id)
+        {
+            RecipeDetailsModel? recipeDetails = new();
+
+            var client = _clientFactory.CreateClient();
+
+            string? apiKey = _configuration["apikey"];
+
+            string address = $"{defaultAddress}/{id}/information?apiKey={apiKey}";
+
+            // TODO: error handling
+
+            recipeDetails = await client.GetFromJsonAsync<RecipeDetailsModel>(address);
+                        
+            return recipeDetails!;
         }
     }
 }

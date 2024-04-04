@@ -27,7 +27,7 @@ namespace FoodPlannerAPI.Controllers
             }
             else
             {
-                query.Replace('?', '&');
+                query = query.Replace('?', '&');
             }
 
             var response = await _recipeService.GetRecipeListByQueryAsync(query!);
@@ -36,6 +36,19 @@ namespace FoodPlannerAPI.Controllers
             {
                 return Ok(response);
             }
+            return NotFound();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetRecipeDetails(int id)
+        {
+            var response = await _recipeService.GetRecipeDetailsByIdAsync(id);
+
+            if (response is not null)
+            {
+                return Ok(response);
+            }
+
             return NotFound();
         }
     }
