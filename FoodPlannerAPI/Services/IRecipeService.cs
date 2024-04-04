@@ -4,6 +4,6 @@ namespace FoodPlannerAPI.Services
 {
     public interface IRecipeService
     {
-        Task<ApiResponseModel> GetRecipesAsync();
+        Task<ApiResponseModel> GetRecipeListByQueryAsync(string query);
     }
 }

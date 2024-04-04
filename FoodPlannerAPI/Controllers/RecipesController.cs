@@ -17,18 +17,26 @@ namespace FoodPlannerAPI.Controllers
         }
 
         [HttpGet("query")]
-        public async Task<IActionResult> GetRecipes([FromQuery] int id, [FromQuery] string name)
+        public async Task<IActionResult> GetRecipes()
         {
-            string _name = name;
-            int _id = id;
+            string? query = HttpContext.Request.QueryString.Value;
 
-            //var response = await _recipeService.GetRecipesAsync();
-            /*if(response is not null)
+            if (query is null)
+            {
+                query = "";
+            }
+            else
+            {
+                query.Replace('?', '&');
+            }
+
+            var response = await _recipeService.GetRecipeListByQueryAsync(query!);
+
+            if (response is not null)
             {
                 return Ok(response);
             }
-            return NotFound();*/
-            return Ok();
+            return NotFound();
         }
     }
 }
