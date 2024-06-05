@@ -1,4 +1,6 @@
+using FoodPlannerAPI.Models;
 using FoodPlannerAPI.Services;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +12,17 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<IRecipeService, RecipeService>();
+
+var config = new ConfigurationBuilder()
+    .SetBasePath(Directory.GetCurrentDirectory())
+    .AddJsonFile("appsettings.json")
+    .Build();
+
+builder.Services.AddDbContext<AppDbContext>(options =>
+options.UseSqlServer(config.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddIdentityApiEndpoints<UserModel>().AddEntityFrameworkStores<AppDbContext>();
+
 
 
 var app = builder.Build();
@@ -23,8 +36,11 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.MapIdentityApi<UserModel>();
+
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
