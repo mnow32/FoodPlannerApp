@@ -1,5 +1,6 @@
 ﻿using FoodPlannerAPI.Models;
 using FoodPlannerAPI.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,6 +18,7 @@ namespace FoodPlannerAPI.Controllers
         }
 
         [HttpGet("query")]
+        //[Authorize]
         public async Task<IActionResult> GetRecipes()
         {
             string? query = HttpContext.Request.QueryString.Value;
