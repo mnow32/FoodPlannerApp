@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FoodPlannerAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class AddIdentity : Migration
+    public partial class InitialCreate2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -48,35 +48,6 @@ namespace FoodPlannerAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "ListDetails",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    Ingredient = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Quantity = table.Column<float>(type: "real", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_ListDetails", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RecipeList",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RecipeList", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -185,6 +156,46 @@ namespace FoodPlannerAPI.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "RecipeList",
+                columns: table => new
+                {
+                    RecipeListModelId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    User = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RecipeList", x => x.RecipeListModelId);
+                    table.ForeignKey(
+                        name: "FK_RecipeList_AspNetUsers_User",
+                        column: x => x.User,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ListDetails",
+                columns: table => new
+                {
+                    ListDetailsModelId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RecipeList = table.Column<int>(type: "int", maxLength: 450, nullable: false),
+                    Ingredient = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Quantity = table.Column<float>(type: "real", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ListDetails", x => x.ListDetailsModelId);
+                    table.ForeignKey(
+                        name: "FK_ListDetails_RecipeList_RecipeList",
+                        column: x => x.RecipeList,
+                        principalTable: "RecipeList",
+                        principalColumn: "RecipeListModelId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -223,6 +234,16 @@ namespace FoodPlannerAPI.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ListDetails_RecipeList",
+                table: "ListDetails",
+                column: "RecipeList");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_RecipeList_User",
+                table: "RecipeList",
+                column: "User");
         }
 
         /// <inheritdoc />
@@ -247,10 +268,10 @@ namespace FoodPlannerAPI.Migrations
                 name: "ListDetails");
 
             migrationBuilder.DropTable(
-                name: "RecipeList");
+                name: "AspNetRoles");
 
             migrationBuilder.DropTable(
-                name: "AspNetRoles");
+                name: "RecipeList");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

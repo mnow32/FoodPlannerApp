@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FoodPlannerAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240605201323_AddIdentity")]
-    partial class AddIdentity
+    [Migration("20240608202416_InitialCreate2")]
+    partial class InitialCreate2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -26,11 +26,11 @@ namespace FoodPlannerAPI.Migrations
 
             modelBuilder.Entity("FoodPlannerAPI.Models.ListDetailsModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ListDetailsModelId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ListDetailsModelId"));
 
                     b.Property<string>("Ingredient")
                         .HasColumnType("nvarchar(max)");
@@ -38,29 +38,35 @@ namespace FoodPlannerAPI.Migrations
                     b.Property<float>("Quantity")
                         .HasColumnType("real");
 
-                    b.Property<int>("UserId")
+                    b.Property<int>("RecipeList")
+                        .HasMaxLength(450)
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("ListDetailsModelId");
+
+                    b.HasIndex("RecipeList");
 
                     b.ToTable("ListDetails");
                 });
 
             modelBuilder.Entity("FoodPlannerAPI.Models.RecipeListModel", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RecipeListModelId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RecipeListModelId"));
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
+                    b.Property<string>("User")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("Id");
+                    b.HasKey("RecipeListModelId");
+
+                    b.HasIndex("User");
 
                     b.ToTable("RecipeList");
                 });
@@ -263,6 +269,26 @@ namespace FoodPlannerAPI.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("FoodPlannerAPI.Models.ListDetailsModel", b =>
+                {
+                    b.HasOne("FoodPlannerAPI.Models.RecipeListModel", "RecipeListModel")
+                        .WithMany("ListDetails")
+                        .HasForeignKey("RecipeList")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("RecipeListModel");
+                });
+
+            modelBuilder.Entity("FoodPlannerAPI.Models.RecipeListModel", b =>
+                {
+                    b.HasOne("FoodPlannerAPI.Models.UserModel", "UserModel")
+                        .WithMany("Recipes")
+                        .HasForeignKey("User");
+
+                    b.Navigation("UserModel");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -312,6 +338,16 @@ namespace FoodPlannerAPI.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("FoodPlannerAPI.Models.RecipeListModel", b =>
+                {
+                    b.Navigation("ListDetails");
+                });
+
+            modelBuilder.Entity("FoodPlannerAPI.Models.UserModel", b =>
+                {
+                    b.Navigation("Recipes");
                 });
 #pragma warning restore 612, 618
         }

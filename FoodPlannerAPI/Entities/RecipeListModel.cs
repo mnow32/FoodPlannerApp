@@ -1,12 +1,24 @@
 
 
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace FoodPlannerAPI.Models
 {
+
+    
     public class RecipeListModel
     {
-        public int Id { get; set; }
+        public List<ListDetailsModel> ?ListDetails { get; set; }
 
-        public int UserId { get; set; }
+        [Key]
+        public int RecipeListModelId { get; set; }
+
+        [ForeignKey("UserModel")]
+        [MaxLength(450)]
+        public string ?User { get; set; }
+
+        public UserModel ?UserModel {get; set; }
 
         public DateTime CreationDate { get; set; }
     }

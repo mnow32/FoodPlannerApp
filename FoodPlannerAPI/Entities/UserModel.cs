@@ -4,6 +4,8 @@ namespace FoodPlannerAPI.Models
 {
     public class UserModel : IdentityUser
     {
-        
+        public List<RecipeListModel> ?Recipes {get; set;}
+
     }
+    
 }
