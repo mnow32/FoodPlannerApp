@@ -41,6 +41,8 @@ builder.Services.AddHttpClient();
 builder.Services.AddTransient<IRecipeService, RecipeService>();
 builder.Services.AddScoped<IUserContext, UserContext>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IListService, ListService>();
+
 
 var config = new ConfigurationBuilder()
     .SetBasePath(Directory.GetCurrentDirectory())

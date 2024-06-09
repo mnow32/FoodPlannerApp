@@ -8,7 +8,7 @@ public class AppDbContext : IdentityDbContext<UserModel>
 {
     internal DbSet<UserModel> User {get; set;}
 
-    internal DbSet<RecipeListModel> RecipeList {get; set;}
+    public DbSet<RecipeListModel> RecipeList {get; set;}
 
     internal DbSet<ListDetailsModel> ListDetails {get; set;}
 
