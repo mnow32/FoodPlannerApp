@@ -39,6 +39,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 builder.Services.AddTransient<IRecipeService, RecipeService>();
+builder.Services.AddDbContext<AppDbContext>();
 builder.Services.AddScoped<IUserContext, UserContext>();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IListService, ListService>();

@@ -13,7 +13,7 @@ public class UserContext(IHttpContextAccessor httpContextAccessor) : IUserContex
         {
             throw new InvalidOperationException("User context is not present");
         }
-        if(user.Identity == null || user.Identity.IsAuthenticated)
+        if(user.Identity == null || !user.Identity.IsAuthenticated)
         {
             return null;
         }
