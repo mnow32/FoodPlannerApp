@@ -16,10 +16,13 @@ namespace FoodPlannerAPI.Services
             _appDbContext = appDbContext;
         }
         
-        public async Task<RecipeListModel> GetNewListByUserIdAsync(string id)
+        public async Task<RecipeListModel> GetLatestListIdByUser(string id)
         {
             var lists = await _appDbContext.RecipeList.ToListAsync();
-            RecipeListModel? list = lists.Where(list => list.User == id).FirstOrDefault();
+            RecipeListModel? list = lists
+            .Where(list => list.User == id)
+            .OrderByDescending(list => list.CreationDate)
+            .FirstOrDefault();
             return list!;
         }
 
@@ -30,6 +33,11 @@ namespace FoodPlannerAPI.Services
             return AllLists;
         }
 
-        //public async Task<
+        public async Task<IEnumerable<ListDetailsModel>> GetListDetailsById(int id)
+        {
+            var details = await _appDbContext.ListDetails.Where(list => list.RecipeList == id).ToListAsync();
+            return details!;
+        }
+
     }
 }
