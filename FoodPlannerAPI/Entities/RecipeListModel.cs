@@ -9,16 +9,16 @@ namespace FoodPlannerAPI.Models
     
     public class RecipeListModel
     {
-        public List<ListDetailsModel> ?ListDetails { get; set; }
+        public List<ListDetailsModel>? ListDetails { get; set; } = new List<ListDetailsModel>();
 
         [Key]
         public int RecipeListModelId { get; set; }
 
         [ForeignKey("UserModel")]
         [MaxLength(450)]
-        public string ?User { get; set; }
+        public string? User { get; set; }
 
-        public UserModel ?UserModel {get; set; }
+        public UserModel? UserModel {get; set; }
 
         public DateTime CreationDate { get; set; }
     }

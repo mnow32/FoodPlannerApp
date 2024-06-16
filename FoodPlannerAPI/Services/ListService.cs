@@ -1,7 +1,9 @@
 using FoodPlannerAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Newtonsoft.Json;
 using System.Collections;
+using System.Net;
 
 namespace FoodPlannerAPI.Services
 {
@@ -16,14 +18,39 @@ namespace FoodPlannerAPI.Services
             _appDbContext = appDbContext;
         }
         
-        public async Task<RecipeListModel> GetLatestListIdByUser(string id)
+        public async Task<RecipeListModel> GetLatestListIdByUserIdAsync(string id)
         {
-            var lists = await _appDbContext.RecipeList.ToListAsync();
+            var lists = await _appDbContext.RecipeList.ToListAsync();            
             RecipeListModel? list = lists
             .Where(list => list.User == id)
             .OrderByDescending(list => list.CreationDate)
-            .FirstOrDefault();
-            return list!;
+            .FirstOrDefault();            
+            if (list is not null)
+            {
+                var listDetails = await _appDbContext.ListDetails.Where(details => details.RecipeList == list.RecipeListModelId).ToListAsync();
+                if (listDetails is not null)
+                {
+                    //foreach (var detail in listDetails)
+                    //{
+                    //    list.ListDetails!.Add(detail);
+                    //}
+
+                    var listSerialize = JsonConvert.SerializeObject(list,
+                        Formatting.Indented,
+                        new JsonSerializerSettings()
+                        {
+                            ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                        }
+                    );
+
+                    RecipeListModel listDeserialize = JsonConvert.DeserializeObject<RecipeListModel>( listSerialize )!;
+
+                    return listDeserialize!;
+                }
+                
+            }
+            return null!;
+            
         }
 
         public async Task<IEnumerable<RecipeListModel>> GetAllListsByUserIdAsync(string id)
@@ -33,11 +60,7 @@ namespace FoodPlannerAPI.Services
             return AllLists;
         }
 
-        public async Task<IEnumerable<ListDetailsModel>> GetListDetailsById(int id)
-        {
-            var details = await _appDbContext.ListDetails.Where(list => list.RecipeList == id).ToListAsync();
-            return details!;
-        }
+        
 
     }
 }

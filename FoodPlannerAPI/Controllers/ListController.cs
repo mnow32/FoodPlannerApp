@@ -24,9 +24,9 @@ namespace FoodPlannerAPI.Controllers
         public async Task<IActionResult> GetNewList()
         {
             CurrentUser? currentUser = _userContext.GetCurrentUser();
-            var list = await _listService.GetLatestListIdByUser(currentUser!.Id);
-            var response = await _listService.GetListDetailsById(list.RecipeListModelId);      
-            if(response is not null)
+            var response = await _listService.GetLatestListIdByUserIdAsync(currentUser!.Id);            
+            
+            if (response is not null)
             {
                 return Ok(response);
             }

@@ -16,6 +16,6 @@ namespace FoodPlannerAPI.Models
 
         public float Quantity { get; set; }
 
-        public RecipeListModel ?RecipeListModel { get; set; }
+        public RecipeListModel? RecipeListModel { get; set; }
     }
 }
