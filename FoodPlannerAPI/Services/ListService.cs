@@ -1,8 +1,10 @@
 using FoodPlannerAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
 using Newtonsoft.Json;
 using System.Collections;
+using System.Collections.Generic;
 using System.Net;
 
 namespace FoodPlannerAPI.Services
@@ -18,23 +20,18 @@ namespace FoodPlannerAPI.Services
             _appDbContext = appDbContext;
         }
         
-        public async Task<RecipeListModel> GetLatestListIdByUserIdAsync(string id)
+        public async Task<RecipeListModel> GetLatestListByUserIdAsync(string id)
         {
-            var lists = await _appDbContext.RecipeList.ToListAsync();            
-            RecipeListModel? list = lists
-            .Where(list => list.User == id)
-            .OrderByDescending(list => list.CreationDate)
-            .FirstOrDefault();            
+            var list = await _appDbContext.RecipeList
+                .Where(list => list.User == id)
+                .OrderByDescending(list => list.CreationDate)
+                .FirstOrDefaultAsync();               
+                        
             if (list is not null)
             {
                 var listDetails = await _appDbContext.ListDetails.Where(details => details.RecipeList == list.RecipeListModelId).ToListAsync();
                 if (listDetails is not null)
                 {
-                    //foreach (var detail in listDetails)
-                    //{
-                    //    list.ListDetails!.Add(detail);
-                    //}
-
                     var listSerialize = JsonConvert.SerializeObject(list,
                         Formatting.Indented,
                         new JsonSerializerSettings()
@@ -42,12 +39,10 @@ namespace FoodPlannerAPI.Services
                             ReferenceLoopHandling = ReferenceLoopHandling.Ignore
                         }
                     );
-
                     RecipeListModel listDeserialize = JsonConvert.DeserializeObject<RecipeListModel>( listSerialize )!;
 
                     return listDeserialize!;
-                }
-                
+                }                
             }
             return null!;
             
@@ -55,12 +50,35 @@ namespace FoodPlannerAPI.Services
 
         public async Task<IEnumerable<RecipeListModel>> GetAllListsByUserIdAsync(string id)
         {
-            var lists = await _appDbContext.RecipeList.ToListAsync();
-            IEnumerable<RecipeListModel>? AllLists = lists.Where(list => list.User == id);
-            return AllLists;
+            var lists = await _appDbContext.RecipeList
+                .Where(list => list.User == id)
+                .ToListAsync();
+
+            if (lists is not null)
+            {
+                foreach (var list in lists)
+                {
+                    list.ListDetails = await _appDbContext.ListDetails.Where(details => details.RecipeList == list.RecipeListModelId).ToListAsync();
+                }
+
+                var listsSerialize = JsonConvert.SerializeObject(lists,
+                            Formatting.Indented,
+                            new JsonSerializerSettings()
+                            {
+                                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+                            }
+                        );
+                IEnumerable<RecipeListModel> listsDeserialize = JsonConvert.DeserializeObject<IEnumerable<RecipeListModel>>(listsSerialize)!;
+
+                return listsDeserialize!;
+            }
+            return null!;
         }
 
-        
+        //public async Task<RecipeListModel> PostNewListByUserIdAsync(string id)
+        //{
+
+        //}
 
     }
 }

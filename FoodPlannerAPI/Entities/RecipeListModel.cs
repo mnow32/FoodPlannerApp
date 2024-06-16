@@ -9,7 +9,7 @@ namespace FoodPlannerAPI.Models
     
     public class RecipeListModel
     {
-        public List<ListDetailsModel>? ListDetails { get; set; } = new List<ListDetailsModel>();
+        public List<ListDetailsModel>? ListDetails { get; set; } = new();
 
         [Key]
         public int RecipeListModelId { get; set; }

@@ -4,7 +4,7 @@ namespace FoodPlannerAPI.Services
 {
     public interface IListService
     {
-        Task<RecipeListModel> GetLatestListIdByUserIdAsync(string id);
+        Task<RecipeListModel> GetLatestListByUserIdAsync(string id);
         Task<IEnumerable<RecipeListModel>> GetAllListsByUserIdAsync(string id);
     }
 }

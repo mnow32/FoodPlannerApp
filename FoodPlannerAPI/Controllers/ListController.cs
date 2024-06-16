@@ -24,7 +24,7 @@ namespace FoodPlannerAPI.Controllers
         public async Task<IActionResult> GetNewList()
         {
             CurrentUser? currentUser = _userContext.GetCurrentUser();
-            var response = await _listService.GetLatestListIdByUserIdAsync(currentUser!.Id);            
+            var response = await _listService.GetLatestListByUserIdAsync(currentUser!.Id);            
             
             if (response is not null)
             {
@@ -49,7 +49,7 @@ namespace FoodPlannerAPI.Controllers
 
         // [HttpPost]
         // [Authorize]
-        // public async Task<IActionResult> PostList()
+        // public async Task<IActionResult> PostNewList()
         // {
 
         // }
