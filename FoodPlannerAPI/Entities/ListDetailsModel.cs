@@ -1,3 +1,4 @@
+using FoodPlannerAPI.DTOs;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -17,5 +18,14 @@ namespace FoodPlannerAPI.Models
         public float Quantity { get; set; }
 
         public RecipeListModel? RecipeListModel { get; set; }
+
+        public static ListDetailsModel FromEntity(ListDetailsDTO dto)
+        {
+            return new ListDetailsModel()
+            {
+                Ingredient = dto.Ingredient,
+                Quantity = dto.Quantity,
+            };
+        }
     }
 }

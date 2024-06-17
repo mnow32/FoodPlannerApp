@@ -4,6 +4,7 @@ using FoodPlannerAPI.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using FoodPlannerAPI.DTOs;
 
 namespace FoodPlannerAPI.Controllers
 {
@@ -47,12 +48,16 @@ namespace FoodPlannerAPI.Controllers
             return NotFound();
         }
 
-        // [HttpPost]
-        // [Authorize]
-        // public async Task<IActionResult> PostNewList()
-        // {
-
-        // }
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateList([FromBody] RecipeListDTO newList)
+        {
+            CurrentUser? currentUser = _userContext.GetCurrentUser();
+            RecipeListModel newListModel = RecipeListModel.FromEntity(newList);
+            newListModel.User = currentUser.Id;
+            int id = await _listService.CreateNewListAsync(newListModel);
+            return Ok(id);
+        }
 
     }
 }

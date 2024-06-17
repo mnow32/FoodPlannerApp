@@ -1,7 +1,9 @@
+using FoodPlannerAPI.DTOs;
 using FoodPlannerAPI.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion.Internal;
+using Microsoft.Identity.Client;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
@@ -75,10 +77,14 @@ namespace FoodPlannerAPI.Services
             return null!;
         }
 
-        //public async Task<RecipeListModel> PostNewListByUserIdAsync(string id)
-        //{
+        public async Task<int> CreateNewListAsync(RecipeListModel newList)
+        {
+            _appDbContext.RecipeList.Add(newList);
 
-        //}
+            await _appDbContext.SaveChangesAsync();
+
+            return newList.RecipeListModelId; 
+        }
 
     }
 }
