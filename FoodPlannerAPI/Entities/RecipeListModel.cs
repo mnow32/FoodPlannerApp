@@ -12,8 +12,8 @@ namespace FoodPlannerAPI.Models
     public class RecipeListModel
     {
         public string? Name { get; set; }
-        public  string? URLs { get; set; }
-        public string? RecipesNames {  get; set; }
+        public List<string>? URLs { get; set; } = new();
+        public List<string>? RecipesNames { get; set; } = new();
         public List<ListDetailsModel>? ListDetails { get; set; } = new();
 
         [Key]
@@ -28,8 +28,12 @@ namespace FoodPlannerAPI.Models
         {
             return new RecipeListModel()
             {
+                Name = dto.Name, 
+                URLs = dto.URLs,
+                RecipesNames = dto.RecipesNames,
                 ListDetails = dto.ListDetails!.Select(detailsDto => ListDetailsModel.FromEntity(detailsDto)).ToList(),
                 CreationDate = dto.CreationDate
+
             };
         }
     }

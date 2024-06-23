@@ -54,7 +54,7 @@ namespace FoodPlannerAPI.Controllers
         {
             CurrentUser? currentUser = _userContext.GetCurrentUser();
             RecipeListModel newListModel = RecipeListModel.FromEntity(newList);
-            newListModel.User = currentUser.Id;
+            newListModel.User = currentUser!.Id;
             int id = await _listService.CreateNewListAsync(newListModel);
             return Ok(id);
         }
